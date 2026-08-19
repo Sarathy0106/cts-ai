@@ -1,0 +1,6 @@
+company,plan_name,target_age,coverage_type,current_rating,hospital_care,primary_care,specialist_care,preventive_care,prescription_drugs,emergency_care,diagnostic_services,mental_health,rehabilitation,dental,vision
+HealthFirst,Senior Basic Plus,65+,Part C + Part D,2.5,Yes,Yes,No,No,Yes,Yes,No,No,No,No,No
+HealthFirst,Senior Complete,65+,Part C + Part D,4.5,Yes,Yes,Yes,Yes,Yes,Yes,Yes,Yes,Yes,Yes,Yes
+HealthFirst,Senior Rx Basic,65+,Part D,3.0,No,No,No,No,Yes,No,No,No,No,No,No
+CareShield,Silver Senior,65+,Part C,3.0,Yes,Yes,No,Yes,No,Yes,Yes,No,No,No,Yes
+CareShield,Complete Advantage,65+,Part C + Part D,4.0,Yes,Yes,Yes,Yes,Yes,Yes,Yes,Yes,Yes,Yes,Yes

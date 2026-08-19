@@ -1,0 +1,45 @@
+age_group,coverage,priority,reason
+18-34,Hospital Care,High,Protection against major hospitalization expenses
+18-34,Primary Care,High,Routine healthcare and preventive visits
+18-34,Preventive Care,High,Screenings and routine preventive services
+18-34,Emergency Care,High,Protection against unexpected emergencies
+18-34,Prescription Drugs,Medium,Medication coverage when required
+18-34,Mental Health,High,Behavioral health support
+18-34,Specialist Care,Medium,Specialist treatment when required
+18-34,Diagnostic Services,Medium,Laboratory and diagnostic services
+18-34,Rehabilitation,Low,Physical and occupational therapy when required
+18-34,Dental,Medium,Dental services
+18-34,Vision,Medium,Vision services
+35-49,Hospital Care,High,Protection against major hospitalization expenses
+35-49,Primary Care,High,Routine healthcare and preventive visits
+35-49,Preventive Care,High,Regular screenings and health monitoring
+35-49,Emergency Care,High,Protection against unexpected emergencies
+35-49,Prescription Drugs,High,Medication coverage
+35-49,Mental Health,High,Behavioral health support
+35-49,Specialist Care,High,Access to specialist treatment
+35-49,Diagnostic Services,High,Laboratory and diagnostic services
+35-49,Rehabilitation,Medium,Physical and occupational therapy
+35-49,Dental,Medium,Dental services
+35-49,Vision,Medium,Vision services
+50-64,Hospital Care,High,Hospital and inpatient protection
+50-64,Primary Care,High,Regular healthcare management
+50-64,Preventive Care,High,Screenings and preventive services
+50-64,Emergency Care,High,Emergency medical protection
+50-64,Prescription Drugs,High,Medication coverage
+50-64,Mental Health,High,Behavioral health services
+50-64,Specialist Care,High,Specialist consultations and treatment
+50-64,Diagnostic Services,High,Testing and diagnostic procedures
+50-64,Rehabilitation,High,Physical occupational and speech therapy
+50-64,Dental,Medium,Dental services
+50-64,Vision,Medium,Vision services
+65+,Hospital Care,High,Hospital and inpatient protection
+65+,Primary Care,High,Regular healthcare management
+65+,Specialist Care,High,Access to specialist consultations
+65+,Preventive Care,High,Screenings vaccinations and wellness services
+65+,Prescription Drugs,High,Prescription medication coverage
+65+,Emergency Care,High,Emergency medical services
+65+,Diagnostic Services,High,Laboratory imaging and diagnostic procedures
+65+,Mental Health,High,Behavioral health services
+65+,Rehabilitation,High,Physical occupational and speech therapy
+65+,Dental,Medium,Dental services
+65+,Vision,Medium,Vision services

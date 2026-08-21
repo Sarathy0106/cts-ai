@@ -1,0 +1,3 @@
+measure_code,measure_name,weight,cms_cut_point_4star,cms_cut_point_5star,financial_impact_per_gap,star_impact_description
+C01,Breast Cancer Screening,4,74.0,81.0,150.0,Significant driver for overall star rating improvement.
+C02,Colorectal Cancer Screening,4,72.0,80.0,120.0,Key component of preventive service measures.

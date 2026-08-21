@@ -1,0 +1,6 @@
+patient_id,risk_factor,successful_intervention,successful_channel,follow_up_action,timeframe
+HIST_001,Low medication adherence (MPR),Refill sync alignment,Portal,Refill check-in,30 days
+HIST_002,Low days covered (PDC),Pharmacist counseling,Phone,Call back,14 days
+HIST_003,Overdue for refill,Refill SMS reminder,SMS,Verify refill,7 days
+HIST_004,Uncontrolled BP,BP clinic follow-up,Phone,BP re-check,14 days
+HIST_005,Elevated HbA1c,Diabetes DSME referral,Email,HbA1c test,90 days

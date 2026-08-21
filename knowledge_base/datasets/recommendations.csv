@@ -1,0 +1,8 @@
+care_gap,risk_factor,recommendation,intervention,priority,follow_up,channel
+CARE GAP,Low medication adherence (MPR),Enroll patient in automated refill reminders and mail-order delivery program.,Medication Adherence Program,HIGH,Check adherence metrics in 30 days,Portal
+CARE GAP,Low days covered (PDC),Conduct pharmacist consultation to address barriers to medication adherence.,Pharmacist Consult,HIGH,Schedule follow-up phone call in 14 days,Phone
+CARE GAP,Overdue for refill,Send automated SMS reminder and offer coordination with local pharmacy for home delivery.,Refill Outreach,MEDIUM,Verify prescription status in 7 days,SMS
+CARE GAP,Uncontrolled BP,Schedule clinical visit for blood pressure monitoring and potential medication adjustment.,Hypertension Care Management,HIGH,Recheck BP clinic reading within 14 days,Phone
+CARE GAP,Elevated HbA1c,Refer patient to Diabetes Self-Management Education (DSME) program and nutritionist.,Diabetes Support Services,HIGH,Recheck HbA1c in 3 months,Email
+CARE GAP,Obese (BMI),Enroll patient in wellness program and lifestyle coaching.,Weight Management Program,LOW,Recheck weight in 6 months,Email
+CARE GAP,High glucose,Provide educational materials on diet and arrange a primary care physician follow-up.,Glucose Monitoring Education,MEDIUM,Review self-monitoring logs in 30 days,Portal

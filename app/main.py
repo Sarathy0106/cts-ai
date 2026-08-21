@@ -7,7 +7,7 @@ def main():
     print("==================================================")
     print("AI INTERVENTION AGENT: Full Orchestration Pipeline")
     print("==================================================")
-    
+
     # 1. Load patients CSV
     csv_path = "../data/patients.csv"
     try:
@@ -37,7 +37,7 @@ def main():
         print(f"Processing Patient {idx+1}/{len(predictions)}: ID {ml_res.get('patient_id')}")
         print(f"ML Prediction: {ml_res.get('prediction')} ({ml_res.get('risk_level')} risk)")
         print(f"--------------------------------------------------")
-        
+
         # Run the AI Intervention Agent on the ML result
         try:
             intervention_plan = run_agent(ml_res)

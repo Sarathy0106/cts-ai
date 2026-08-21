@@ -71,26 +71,26 @@ def run_agent(ml_result):
     prompt = f"""
     Patient ID: {patient_id}
     ML Prediction: {ml_result}
-    
+
     Selected Intervention: {intervention_res['intervention']}
     Intervention Reason: {intervention_res['reason']}
     Selected Channel: {channel_res['channel']}
     Outreach Message: {outreach_msg}
     Follow-up: Action: {followup_res['action']}, Timeframe: {followup_res['timeframe']}
-    
+
     Retrieved Documentation context:
     {json.dumps([{ 'name': d['source_name'], 'text': d['content'][:300] } for d in doc_evidence])}
-    
+
     Retrieved Dataset context:
     {json.dumps([{ 'name': d['source_name'], 'content': d['content'] } for d in data_evidence])}
-    
+
     Human Review Required: {requires_human_review}
-    
+
     Format the response as a valid JSON object matching the requested schema. Ensure all fields are filled accurately.
     """
 
     logger.info("Calling LLM for final validation and structured formatting...")
-    
+
     llm_payload = {
         "model": OLLAMA_MODEL,
         "prompt": prompt,
@@ -105,7 +105,7 @@ def run_agent(ml_result):
         response = requests.post(f"{OLLAMA_BASE_URL}/api/generate", json=llm_payload, timeout=60)
         response.raise_for_status()
         llm_response_text = response.json().get("response", "").strip()
-        
+
         # Locate the JSON block in case there is markdown wrapper
         if "```json" in llm_response_text:
             llm_response_text = llm_response_text.split("```json")[1].split("```")[0].strip()
@@ -119,7 +119,7 @@ def run_agent(ml_result):
 
     except Exception as e:
         logger.warning(f"Error querying Ollama or parsing response: {e}")
-        
+
         if GROQ_API_KEY:
             logger.info("Attempting fallback to Groq API...")
             groq_payload = {
@@ -145,7 +145,7 @@ def run_agent(ml_result):
                 groq_response.raise_for_status()
                 groq_json = groq_response.json()
                 llm_response_text = groq_json["choices"][0]["message"]["content"].strip()
-                
+
                 # Locate the JSON block in case there is markdown wrapper
                 if "```json" in llm_response_text:
                     llm_response_text = llm_response_text.split("```json")[1].split("```")[0].strip()

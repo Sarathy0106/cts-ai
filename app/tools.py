@@ -5,12 +5,12 @@ def select_intervention(ml_result, dataset_evidence, documentation_evidence):
     Selects an intervention grounded in RAG evidence matching patient risk factors.
     """
     risk_factors = ml_result.get("risk_factors", [])
-    
+
     # Scan datasets for a match with any of the risk factors
     for record in dataset_evidence:
         content = record.get("content", "").lower()
         raw_data = record.get("metadata", {}).get("raw_data", {})
-        
+
         # Check if the record specifies an intervention
         for factor in risk_factors:
             clean_factor = factor.split("(")[0].strip().lower()
@@ -24,7 +24,7 @@ def select_intervention(ml_result, dataset_evidence, documentation_evidence):
                         "requires_human_review": False,
                         "source": record
                     }
-                    
+
     # Scan documentation for a match
     for doc in documentation_evidence:
         content = doc.get("content", "").lower()
@@ -38,7 +38,7 @@ def select_intervention(ml_result, dataset_evidence, documentation_evidence):
                     "requires_human_review": False,
                     "source": doc
                 }
-                
+
     return {
         "intervention": "Generic care outreach",
         "reason": "No matching clinical intervention mapped in RAG evidence. Care manager review required.",
@@ -73,7 +73,7 @@ def choose_channel(dataset_evidence):
                 "requires_human_review": False,
                 "source": record
             }
-            
+
     # Return review if no evidence is found
     return {
         "channel": "REQUIRES_HUMAN_REVIEW",
@@ -90,7 +90,7 @@ def create_followup_plan(dataset_evidence):
         raw_data = record.get("metadata", {}).get("raw_data", {})
         follow_up = raw_data.get("follow_up") or raw_data.get("follow_up_action")
         timeframe = raw_data.get("timeframe")
-        
+
         # Determine timeframe if it's in the follow_up text
         if follow_up:
             if not timeframe:
@@ -98,14 +98,14 @@ def create_followup_plan(dataset_evidence):
                 import re
                 match = re.search(r'\b\d+\s+(?:days|weeks|months)\b', follow_up, re.IGNORECASE)
                 timeframe = match.group(0) if match else "as specified"
-                
+
             return {
                 "action": follow_up,
                 "timeframe": timeframe,
                 "requires_human_review": False,
                 "source": record
             }
-            
+
     return {
         "action": "Verify patient status and outreach response",
         "timeframe": "REQUIRES_HUMAN_REVIEW",

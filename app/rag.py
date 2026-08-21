@@ -25,7 +25,7 @@ class VectorStoreManager:
         """
         if not items:
             return
-        
+
         texts = [item["content"] for item in items]
         embeddings = EMBEDDING_MODEL.encode(texts, show_progress_bar=True)
         embeddings = np.array(embeddings).astype("float32")

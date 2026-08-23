@@ -1,0 +1,566 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "Medicare Advantage Quality Star-Impact Simulator API",
+    "description": "Probabilistic Beta-Binomial Monte Carlo Simulation API for Medicare Advantage Care Gap Closures & CMS Star Cut-Point Forecasting.",
+    "version": "2.0.0"
+  },
+  "paths": {
+    "/": {
+      "get": {
+        "tags": [
+          "Health & Info"
+        ],
+        "summary": "Root Health",
+        "operationId": "root_health__get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          }
+        }
+      }
+    },
+    "/measures": {
+      "get": {
+        "tags": [
+          "CMS Catalog"
+        ],
+        "summary": "Get Supported Cms Measures",
+        "description": "Retrieve official CMS 2026 technical specifications and cut-point thresholds for all measures.",
+        "operationId": "get_supported_cms_measures_measures_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          }
+        }
+      }
+    },
+    "/channels": {
+      "get": {
+        "tags": [
+          "Intervention Catalog"
+        ],
+        "summary": "Get Intervention Channels",
+        "description": "Retrieve outreach channels, unit costs, capacities, and Bayesian Beta priors.",
+        "operationId": "get_intervention_channels_channels_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          }
+        }
+      }
+    },
+    "/simulate/{measure_code}": {
+      "post": {
+        "tags": [
+          "Simulation"
+        ],
+        "summary": "Simulate Single Scenario",
+        "description": "Execute 5,000-run Beta-Binomial Monte Carlo simulation for a specific outreach scenario.\n\nAccepts full custom gap cohort with Model 3 priority & Model 4 persona features in request body,\nor runs against baseline health plan portfolio.",
+        "operationId": "simulate_single_scenario_simulate__measure_code__post",
+        "parameters": [
+          {
+            "name": "measure_code",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "description": "Target CMS measure (e.g. C14, D10, C18)",
+              "title": "Measure Code"
+            },
+            "description": "Target CMS measure (e.g. C14, D10, C18)"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SimulationRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DirectionalStarImpactOutput"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/simulate/{measure_code}/scenarios": {
+      "get": {
+        "tags": [
+          "Simulation"
+        ],
+        "summary": "Simulate All Standard Scenarios",
+        "description": "Run full 8-scenario comparison and sensitivity battery across 5,000 Monte Carlo futures.",
+        "operationId": "simulate_all_standard_scenarios_simulate__measure_code__scenarios_get",
+        "parameters": [
+          {
+            "name": "measure_code",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "description": "Target CMS measure (e.g. C14, D10, C18)",
+              "title": "Measure Code"
+            },
+            "description": "Target CMS measure (e.g. C14, D10, C18)"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/DirectionalStarImpactOutput"
+                  },
+                  "title": "Response Simulate All Standard Scenarios Simulate  Measure Code  Scenarios Get"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "DirectionalStarImpactOutput": {
+        "properties": {
+          "current_rate": {
+            "type": "number",
+            "title": "Current Rate"
+          },
+          "projected_rate_median": {
+            "type": "number",
+            "title": "Projected Rate Median"
+          },
+          "projected_rate_p05": {
+            "type": "number",
+            "title": "Projected Rate P05"
+          },
+          "projected_rate_p95": {
+            "type": "number",
+            "title": "Projected Rate P95"
+          },
+          "expected_gap_closures": {
+            "type": "integer",
+            "title": "Expected Gap Closures"
+          },
+          "current_star": {
+            "type": "integer",
+            "title": "Current Star"
+          },
+          "projected_star": {
+            "type": "integer",
+            "title": "Projected Star"
+          },
+          "next_star_cut_point": {
+            "type": "number",
+            "title": "Next Star Cut Point"
+          },
+          "probability_of_next_star": {
+            "type": "number",
+            "title": "Probability Of Next Star"
+          },
+          "expected_cost": {
+            "type": "number",
+            "title": "Expected Cost"
+          },
+          "cost_per_expected_closure": {
+            "type": "number",
+            "title": "Cost Per Expected Closure"
+          },
+          "scenario": {
+            "type": "string",
+            "title": "Scenario"
+          },
+          "recommendation": {
+            "type": "string",
+            "title": "Recommendation"
+          }
+        },
+        "type": "object",
+        "required": [
+          "current_rate",
+          "projected_rate_median",
+          "projected_rate_p05",
+          "projected_rate_p95",
+          "expected_gap_closures",
+          "current_star",
+          "projected_star",
+          "next_star_cut_point",
+          "probability_of_next_star",
+          "expected_cost",
+          "cost_per_expected_closure",
+          "scenario",
+          "recommendation"
+        ],
+        "title": "DirectionalStarImpactOutput"
+      },
+      "HTTPValidationError": {
+        "properties": {
+          "detail": {
+            "items": {
+              "$ref": "#/components/schemas/ValidationError"
+            },
+            "type": "array",
+            "title": "Detail"
+          }
+        },
+        "type": "object",
+        "title": "HTTPValidationError"
+      },
+      "MemberGapItem": {
+        "properties": {
+          "member_id": {
+            "type": "string",
+            "title": "Member Id",
+            "example": "MBR_00101"
+          },
+          "measure_code": {
+            "type": "string",
+            "title": "Measure Code",
+            "example": "C14"
+          },
+          "gap_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Gap Id",
+            "example": "MBR_00101_C14"
+          },
+          "eligible_flag": {
+            "type": "string",
+            "title": "Eligible Flag",
+            "default": "Yes",
+            "example": "Yes"
+          },
+          "excluded_flag": {
+            "type": "string",
+            "title": "Excluded Flag",
+            "default": "No",
+            "example": "No"
+          },
+          "gap_status": {
+            "type": "string",
+            "title": "Gap Status",
+            "default": "Not compliant",
+            "example": "Not compliant"
+          },
+          "risk_probability": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Risk Probability",
+            "default": 0.75,
+            "example": 0.75
+          },
+          "priority_score": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Priority Score",
+            "default": 0.85,
+            "example": 0.85
+          },
+          "priority_rank": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Priority Rank",
+            "default": 1,
+            "example": 1
+          },
+          "cluster_id": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Cluster Id",
+            "default": 2,
+            "example": 2
+          },
+          "cluster_persona": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Cluster Persona",
+            "default": "Polypharmacy_Senior",
+            "example": "Polypharmacy_Senior"
+          },
+          "clinical_urgency_score": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Clinical Urgency Score",
+            "default": 0.8,
+            "example": 0.8
+          },
+          "active_careplan_count": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Active Careplan Count",
+            "default": 2,
+            "example": 2
+          },
+          "encounter_count_12m": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Encounter Count 12M",
+            "default": 3,
+            "example": 3
+          },
+          "days_to_measurement_end": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Days To Measurement End",
+            "default": 90,
+            "example": 90
+          },
+          "nearest_provider_distance": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Nearest Provider Distance",
+            "default": 5.4,
+            "example": 5.4
+          },
+          "telehealth_eligible": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Telehealth Eligible",
+            "default": true,
+            "example": true
+          }
+        },
+        "type": "object",
+        "required": [
+          "member_id",
+          "measure_code"
+        ],
+        "title": "MemberGapItem"
+      },
+      "SimulationRequest": {
+        "properties": {
+          "scenario": {
+            "type": "string",
+            "title": "Scenario",
+            "description": "Baseline, Conservative, Moderate, Aggressive, Access_Aware",
+            "default": "Moderate"
+          },
+          "channel": {
+            "type": "string",
+            "title": "Channel",
+            "description": "SMS, IVR_Call, Live_Agent_Call, Pharmacist_Consult, In_Home_Visit, Direct_Mail",
+            "default": "Live_Agent_Call"
+          },
+          "max_budget": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Max Budget",
+            "description": "Optional total outreach budget cap ($)"
+          },
+          "max_candidates": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Max Candidates",
+            "description": "Optional cap on targeted open gaps"
+          },
+          "probability_shift": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Probability Shift",
+            "description": "Sensitivity shift (-0.20 to +0.20)",
+            "default": 0.0
+          },
+          "gaps_cohort": {
+            "anyOf": [
+              {
+                "items": {
+                  "$ref": "#/components/schemas/MemberGapItem"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Gaps Cohort",
+            "description": "Optional list of member care gaps to simulate directly"
+          }
+        },
+        "type": "object",
+        "title": "SimulationRequest"
+      },
+      "ValidationError": {
+        "properties": {
+          "loc": {
+            "items": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "integer"
+                }
+              ]
+            },
+            "type": "array",
+            "title": "Location"
+          },
+          "msg": {
+            "type": "string",
+            "title": "Message"
+          },
+          "type": {
+            "type": "string",
+            "title": "Error Type"
+          },
+          "input": {
+            "title": "Input"
+          },
+          "ctx": {
+            "type": "object",
+            "title": "Context"
+          }
+        },
+        "type": "object",
+        "required": [
+          "loc",
+          "msg",
+          "type"
+        ],
+        "title": "ValidationError"
+      }
+    }
+  }
+}

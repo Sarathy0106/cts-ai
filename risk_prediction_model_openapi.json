@@ -1,0 +1,508 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "CMS Star Ratings and Clinical Health Risk Prediction API",
+    "description": "Predict patient-level risk and compliance for 13 CMS Part C and D clinical quality measures.",
+    "version": "1.0.0"
+  },
+  "paths": {
+    "/": {
+      "get": {
+        "tags": [
+          "Health"
+        ],
+        "summary": "Health Check",
+        "operationId": "health_check__get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          }
+        }
+      }
+    },
+    "/measures": {
+      "get": {
+        "tags": [
+          "Metadata"
+        ],
+        "summary": "List Supported Measures",
+        "description": "List all available CMS measure models and descriptions.",
+        "operationId": "list_supported_measures_measures_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          }
+        }
+      }
+    },
+    "/predict/{measure_code}": {
+      "post": {
+        "tags": [
+          "Inference"
+        ],
+        "summary": "Predict Single Measure",
+        "description": "Predict risk, compliance, reasons, and recommended actions for a specific CMS measure.",
+        "operationId": "predict_single_measure_predict__measure_code__post",
+        "parameters": [
+          {
+            "name": "measure_code",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Measure Code"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PatientProfile"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ClinicalMeasureOutput"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/predict": {
+      "post": {
+        "tags": [
+          "Inference"
+        ],
+        "summary": "Score All Measures For Patient",
+        "description": "Score a patient profile against ALL 13 CMS clinical quality models in a single call.",
+        "operationId": "score_all_measures_for_patient_predict_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PatientProfile"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PatientScoreResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/batch_predict": {
+      "post": {
+        "tags": [
+          "Inference"
+        ],
+        "summary": "Score Batch Patients",
+        "description": "Batch inference for multiple patients across all measures.",
+        "operationId": "score_batch_patients_batch_predict_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/BatchScoreRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "BatchScoreRequest": {
+        "properties": {
+          "patients": {
+            "items": {
+              "$ref": "#/components/schemas/PatientProfile"
+            },
+            "type": "array",
+            "title": "Patients"
+          }
+        },
+        "type": "object",
+        "required": [
+          "patients"
+        ],
+        "title": "BatchScoreRequest"
+      },
+      "ClinicalMeasureOutput": {
+        "properties": {
+          "member_id": {
+            "type": "string",
+            "title": "Member Id",
+            "description": "Unique member/patient identifier"
+          },
+          "measure_code": {
+            "type": "string",
+            "title": "Measure Code",
+            "description": "CMS measure code, e.g. D10"
+          },
+          "eligible": {
+            "type": "string",
+            "title": "Eligible",
+            "description": "Yes / No eligibility status for the measure"
+          },
+          "risk_probability": {
+            "type": "number",
+            "title": "Risk Probability",
+            "description": "Risk or non-compliance probability (0.00 - 1.00)"
+          },
+          "risk_band": {
+            "type": "string",
+            "title": "Risk Band",
+            "description": "High / Medium / Low"
+          },
+          "current_status": {
+            "type": "string",
+            "title": "Current Status",
+            "description": "Compliant / Not compliant"
+          },
+          "target": {
+            "type": "string",
+            "title": "Target",
+            "description": "Predictive trajectory for measurement period"
+          },
+          "top_reasons": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Top Reasons",
+            "description": "Top clinical and behavioral driver factors"
+          },
+          "recommended_action": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Recommended Action",
+            "description": "Recommended clinical or care management interventions"
+          }
+        },
+        "type": "object",
+        "required": [
+          "member_id",
+          "measure_code",
+          "eligible",
+          "risk_probability",
+          "risk_band",
+          "current_status",
+          "target"
+        ],
+        "title": "ClinicalMeasureOutput"
+      },
+      "HTTPValidationError": {
+        "properties": {
+          "detail": {
+            "items": {
+              "$ref": "#/components/schemas/ValidationError"
+            },
+            "type": "array",
+            "title": "Detail"
+          }
+        },
+        "type": "object",
+        "title": "HTTPValidationError"
+      },
+      "PatientProfile": {
+        "properties": {
+          "patient_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Patient Id",
+            "description": "Unique patient identifier",
+            "default": "sample_pt_001"
+          },
+          "age": {
+            "type": "number",
+            "maximum": 130.0,
+            "minimum": 0.0,
+            "title": "Age",
+            "description": "Age in years"
+          },
+          "gender_M": {
+            "type": "integer",
+            "maximum": 1.0,
+            "minimum": 0.0,
+            "title": "Gender M",
+            "description": "1 if Male, 0 if Female",
+            "default": 0
+          },
+          "encounter_count_12m": {
+            "type": "number",
+            "minimum": 0.0,
+            "title": "Encounter Count 12M",
+            "description": "Number of encounters in past 12 months",
+            "default": 0.0
+          },
+          "days_since_last_encounter": {
+            "type": "number",
+            "minimum": 0.0,
+            "title": "Days Since Last Encounter",
+            "description": "Days since most recent encounter",
+            "default": 0.0
+          },
+          "medication_unique_count": {
+            "type": "number",
+            "minimum": 0.0,
+            "title": "Medication Unique Count",
+            "description": "Number of distinct active medications",
+            "default": 0.0
+          },
+          "has_diabetes": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Has Diabetes",
+            "description": "Type 2 Diabetes Mellitus diagnosed",
+            "default": false
+          },
+          "has_hypertension": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Has Hypertension",
+            "description": "Essential Hypertension diagnosed",
+            "default": false
+          },
+          "has_cvd": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Has Cvd",
+            "description": "Coronary Heart Disease / CVD diagnosed",
+            "default": false
+          },
+          "has_heart_failure": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Has Heart Failure",
+            "description": "Congestive Heart Failure diagnosed",
+            "default": false
+          },
+          "has_stroke": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Has Stroke",
+            "description": "History of stroke / cerebrovascular event",
+            "default": false
+          },
+          "has_osteoporosis": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Has Osteoporosis",
+            "description": "Osteoporosis diagnosed",
+            "default": false
+          },
+          "has_depression": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Has Depression",
+            "description": "Major Depressive Disorder diagnosed",
+            "default": false
+          },
+          "custom_features": {
+            "anyOf": [
+              {
+                "additionalProperties": {
+                  "type": "number"
+                },
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Custom Features",
+            "description": "Direct key-value map for exact feature columns"
+          }
+        },
+        "type": "object",
+        "required": [
+          "age"
+        ],
+        "title": "PatientProfile"
+      },
+      "PatientScoreResponse": {
+        "properties": {
+          "member_id": {
+            "type": "string",
+            "title": "Member Id"
+          },
+          "predictions": {
+            "items": {
+              "$ref": "#/components/schemas/ClinicalMeasureOutput"
+            },
+            "type": "array",
+            "title": "Predictions"
+          }
+        },
+        "type": "object",
+        "required": [
+          "member_id",
+          "predictions"
+        ],
+        "title": "PatientScoreResponse"
+      },
+      "ValidationError": {
+        "properties": {
+          "loc": {
+            "items": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "integer"
+                }
+              ]
+            },
+            "type": "array",
+            "title": "Location"
+          },
+          "msg": {
+            "type": "string",
+            "title": "Message"
+          },
+          "type": {
+            "type": "string",
+            "title": "Error Type"
+          },
+          "input": {
+            "title": "Input"
+          },
+          "ctx": {
+            "type": "object",
+            "title": "Context"
+          }
+        },
+        "type": "object",
+        "required": [
+          "loc",
+          "msg",
+          "type"
+        ],
+        "title": "ValidationError"
+      }
+    }
+  }
+}
